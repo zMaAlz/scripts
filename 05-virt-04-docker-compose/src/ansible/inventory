@@ -1,5 +1,0 @@
-[nodes]
-node01.netology.cloud ansible_host=
-
-[nodes2]
-node02.netology.cloud ansible_host=
