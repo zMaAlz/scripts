@@ -1,0 +1,10 @@
+[sources.in]
+type = "stdin"
+
+[sinks.clickhouse]
+type = "clickhouse"
+inputs = ["in"]
+endpoint = "http://localhost:8123"
+database = "logs"
+table = "alerts"
+skip_unknown_fields = true

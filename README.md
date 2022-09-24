@@ -1,2 +1,2 @@
 # scripts
-scripts
+Примеры terraform, ansible и скриптов
