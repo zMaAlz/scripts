@@ -1,0 +1,11 @@
+---
+# - src: git@github.com:zMaAlz/clickhouse-role.git
+#   scm: git
+#   version: "1.0.0"
+#   name: clickhouse-role
+# - src: git@github.com:zMaAlz/nginx-role.git
+#   scm: git
+#   version: "1.0.0"
+#   name: nginx-role
+
+   

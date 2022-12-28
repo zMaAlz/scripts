@@ -1,0 +1,7 @@
+---
+all:
+  hosts:
+    kubemaster:
+      ansible_host: "192.168.121.30"
+      ansible_user: "{{ ADMIN_USER }}"
+
