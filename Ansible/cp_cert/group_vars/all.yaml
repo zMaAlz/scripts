@@ -1,0 +1,3 @@
+---
+USER_IN_SERVER: "ansible"
+AUTHORIZED_KEY: "/etc/ceph/ceph.pub"

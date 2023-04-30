@@ -1,0 +1,4 @@
+---
+KUBECTL_VERSION: "v1.26.2"
+HELM_VERSION: "https://get.helm.sh/helm-v3.11.2-linux-amd64.tar.gz"
+GITLAB_VOLUME_ENVIROMENT: "GITLAB_HOME=/srv/gitlab"

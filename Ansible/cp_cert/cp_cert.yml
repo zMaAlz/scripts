@@ -1,0 +1,11 @@
+---
+- name: Add cert to remote host
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Copy cert to remote host
+      ansible.posix.authorized_key: 
+        user: {{ USER_IN_SERVER }}
+        state: present
+        key: "{{ lookup('file', {{ AUTHORIZED_KEY }}) }}"
+      

@@ -1,0 +1,15 @@
+---
+version: '3.8'
+networks:
+  monitoring:
+    driver: bridge
+services:
+  nginx-lb:
+    image: nginx-lb
+    build: ./nginx
+    container_name: nginx-lb
+    ports:
+      - 6443:6443
+    restart: unless-stopped 
+    networks: 
+      - monitoring

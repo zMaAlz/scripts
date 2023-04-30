@@ -1,0 +1,32 @@
+---
+version: '3.6'
+networks:
+  monitoring:
+    driver: bridge
+services:
+  gitlab_ce:
+    image: "gitlab/gitlab-ce:15.9.5-ce.0"
+    container_name: gitlab-ce
+    restart: unless-stopped 
+    hostname: 'gitlab.biz'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.biz:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
+  gitlab_docs:
+    image: registry.gitlab.com/gitlab-org/gitlab-docs:14.5
+    container_name: gitlab-docs
+    hostname: 'http://gitlab.biz:4000'
+    restart: unless-stopped 
+    ports:
+      - '4000:4000'
+    networks: 
+      - monitoring

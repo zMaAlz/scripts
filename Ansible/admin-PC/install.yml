@@ -1,0 +1,57 @@
+---
+- name: Preparation CICD server
+  hosts: cicd
+  pre_tasks:
+    - name: Save the contents of /etc/os-release
+      command: cat /etc/os-release
+      register: os_release
+      changed_when: False
+    - name: Detect Linux Servers
+      debug:
+        msg: "Find on CentOS|Fedora..."
+      when: os_release.stdout.find('CentOS') != -1 or os_release.stdout.find('Fedora') != -1
+      changed_when: False
+    - name: Detect Linux Servers
+      debug:
+        msg: "Find on Debian|Ubuntu..."
+      when: os_release.stdout.find('debian') != -1 or os_release.stdout.find('Ubuntu') != -1
+      changed_when: False    
+  tasks:
+    - name: Download kubectl {{ KUBECTL_VERSION }}
+      become: true
+      ansible.builtin.get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/{{ KUBECTL_VERSION }}/bin/linux/amd64/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+    - name: Add dir .kube
+      ansible.builtin.file:
+        path: $HOME/.kube
+        state: directory
+        mode: '0775'
+    - name: Download Helm
+      become: true
+      ansible.builtin.unarchive:
+        src: {{ HELM_VERSION }}
+        dest: /srv/
+        remote_src: yes
+    - name: Install Helm
+      become: true
+      ansible.builtin.copy:
+        src: /srv/linux-amd64/helm 
+        dest: /usr/local/bin/helm
+        mode: '0775'
+    - name: Add dir GitLab
+      become: true
+      ansible.builtin.file:
+        path: {{ GITLAB_VOLUME_ENVIROMENT }}
+        state: directory
+        mode: '0777'
+    - name: Add GitLab volumes in /etc/environment
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/environment
+        line: {{ GITLAB_VOLUME_ENVIROMENT }}
+        regexp: {{ GITLAB_VOLUME_ENVIROMENT }}
+        state: present
+        insertafter: EOF
+        
