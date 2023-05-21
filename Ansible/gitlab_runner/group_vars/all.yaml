@@ -1,0 +1,5 @@
+---
+FOLDER_TEMPLATE_CONFIG: "/srv/"
+REGISTRATION_TOKEN: ""
+NAME_RUNNER: "shell-runner"
+TAGS_RUNNER: "linux,helm,docker"

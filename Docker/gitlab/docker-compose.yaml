@@ -1,32 +1,39 @@
 ---
-version: '3.6'
+version: '3.7'
 networks:
   monitoring:
     driver: bridge
 services:
-  gitlab_ce:
-    image: "gitlab/gitlab-ce:15.9.5-ce.0"
-    container_name: gitlab-ce
+  gitlab_ee:
+    image: "gitlab/gitlab-ee:15.11.5-ee.0"
+    container_name: gitlab-ee
     restart: unless-stopped 
-    hostname: 'gitlab.biz'
+    hostname: 'gitlab.familym.ru'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.biz:8929'
+        external_url 'http://gitlab.familym.ru:8929'
         gitlab_rails['gitlab_shell_ssh_port'] = 2224
+        gitlab_kas['enable'] = true
     ports:
       - '8929:8929'
-      - '2224:22'
+      - '2224:2224'
     volumes:
-      - '$GITLAB_HOME/config:/etc/gitlab'
-      - '$GITLAB_HOME/logs:/var/log/gitlab'
-      - '$GITLAB_HOME/data:/var/opt/gitlab'
+      - '/opt/gitlab/config:/etc/gitlab'
+      - '/opt/gitlab/logs:/var/log/gitlab'
+      - '/opt/gitlab/data:/var/opt/gitlab'
     shm_size: '256m'
-  gitlab_docs:
-    image: registry.gitlab.com/gitlab-org/gitlab-docs:14.5
-    container_name: gitlab-docs
-    hostname: 'http://gitlab.biz:4000'
-    restart: unless-stopped 
-    ports:
-      - '4000:4000'
+  gitlab-runner:
+    image: gitlab/gitlab-runner:ubuntu-v15.11.0
+    container_name: gitlab-runner
+    restart: always
+    env_file:
+      - ./.env
+    depends_on:
+      - gitlab_ce
+    volumes:
+      - ./config.template.toml:/srv/config.template.toml
+      - /opt/gitlab/gitlab-runner:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./hosts:/etc/hosts
     networks: 
       - monitoring

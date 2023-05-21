@@ -1,0 +1,4 @@
+[[runners]]
+  url = "http://192.168.2.210:8929/"
+  executor = "shell"
+  shell = "bash"

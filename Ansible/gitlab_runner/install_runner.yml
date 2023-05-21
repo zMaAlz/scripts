@@ -1,0 +1,53 @@
+---
+- name: Add cert to remote host
+  hosts: gitlab_runner
+  pre_tasks:
+    - name: Save the contents of /etc/os-release
+      command: cat /etc/os-release
+      register: os_release
+      changed_when: False
+    - name: Detect Linux Servers
+      debug:
+        msg: "Find on CentOS|Fedora..."
+      when: os_release.stdout.find('CentOS') != -1 or os_release.stdout.find('Fedora') != -1
+      changed_when: False
+    - name: Detect Linux Servers
+      debug:
+        msg: "Find on Debian|Ubuntu..."
+      failed_when: os_release.stdout.find('debian') != -1 or os_release.stdout.find('Ubuntu') != -1
+  tasks:
+    - name: Download repositories script
+      become: true
+      ansible.builtin.shell: "curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash"
+    - name: Install gitlab-runner
+      become: true
+      ansible.builtin.yum:
+        name: gitlab-runner
+        state: present
+    - name: Systemctl start docker
+      become: true
+      ansible.builtin.systemd:
+        state: started
+        name: docker
+    - name: Add gitlab-runner in group docker
+      become: true
+      ansible.builtin.user:
+        name: gitlab-runner
+        groups: docker
+        append: yes
+   - name: Copy template config
+      become: true
+      ansible.builtin.copy:
+        src: ./templates/config.template.toml
+        dest: {{ FOLDER_TEMPLATE_CONFIG }}config.template.toml
+        mode: '0666'
+    - name: gitlab-runner register
+      become: true
+      ansible.builtin.shell: |
+        gitlab-runner register \
+          --name {{ NAME_RUNNER }} \
+          --registration-token {{ REGISTRATION_TOKEN }} \
+          --config /etc/gitlab-runner/config.toml \
+          --template-config {{ FOLDER_TEMPLATE_CONFIG }}config.template.toml \
+          --non-interactive \
+          --tag-list {{ TAGS_RUNNER }} 

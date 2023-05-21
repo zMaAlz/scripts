@@ -1,6 +1,6 @@
 ---
 - name: Preparation CICD server
-  hosts: cicd
+  hosts: all
   pre_tasks:
     - name: Save the contents of /etc/os-release
       command: cat /etc/os-release
@@ -31,8 +31,8 @@
     - name: Download Helm
       become: true
       ansible.builtin.unarchive:
-        src: {{ HELM_VERSION }}
-        dest: /srv/
+        src: "{{ HELM_VERSION }}"
+        dest: "/srv/"
         remote_src: yes
     - name: Install Helm
       become: true
@@ -43,15 +43,14 @@
     - name: Add dir GitLab
       become: true
       ansible.builtin.file:
-        path: {{ GITLAB_VOLUME_ENVIROMENT }}
+        path: "{{ GITLAB_VOLUME }}"
         state: directory
-        mode: '0777'
+        mode: '0766'
     - name: Add GitLab volumes in /etc/environment
       become: true
       ansible.builtin.lineinfile:
         path: /etc/environment
-        line: {{ GITLAB_VOLUME_ENVIROMENT }}
-        regexp: {{ GITLAB_VOLUME_ENVIROMENT }}
+        line: "{{ GITLAB_ENVIROMENT }}"
+        regexp: "{{ GITLAB_ENVIROMENT }}"
         state: present
         insertafter: EOF
-        
