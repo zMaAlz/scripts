@@ -18,7 +18,7 @@
   tasks:
     - name: Download repositories script
       become: true
-      ansible.builtin.shell: "curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash"
+      ansible.builtin.shell: 'curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash'
     - name: Install gitlab-runner
       become: true
       ansible.builtin.yum:
@@ -35,11 +35,11 @@
         name: gitlab-runner
         groups: docker
         append: yes
-   - name: Copy template config
+    - name: Copy template config
       become: true
       ansible.builtin.copy:
-        src: ./templates/config.template.toml
-        dest: {{ FOLDER_TEMPLATE_CONFIG }}config.template.toml
+        src: "./templates/config.template.toml"<
+        dest: "{{ FOLDER_TEMPLATE_CONFIG }}config.template.toml"
         mode: '0666'
     - name: gitlab-runner register
       become: true
