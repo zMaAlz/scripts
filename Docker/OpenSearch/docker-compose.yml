@@ -1,9 +1,8 @@
+---
 version: '3'
-
 networks:
   opensearch-net:
     driver: bridge
-
 services:
   opensearch-node1:
     image: opensearchproject/opensearch:latest

@@ -1,0 +1,21 @@
+---
+version: '3'
+networks:
+  host-net:
+    driver: bridge
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "homeassistant/home-assistant:2023.12"
+    environment:
+      DISABLE_JEMALLOC: true
+    volumes:
+      - /opt/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    ports:
+      - 8123:8123
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - host-net
